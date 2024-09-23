@@ -263,7 +263,7 @@ html[dir="rtl"] .footer_banner:nth-child(5) {
 
 .flash_deal_product {
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.0509803922);
-   
+    background: white;
     border-radius: 5px;
 }
 
@@ -844,7 +844,7 @@ html[dir="rtl"] .footer_banner:nth-child(5) {
 }
 
 .view-all-text {
-    /* color: var(--web-secondary) !important; */
+    color: var(--web-secondary) !important;
 }
 
 .feature-product .czi-arrow-left {

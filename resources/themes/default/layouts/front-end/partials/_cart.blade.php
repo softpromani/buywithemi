@@ -1,6 +1,6 @@
-<div class="navbar-tool dropdown {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
+<div class="navbar-tool dropdown me-2 {{Session::get('direction') === "rtl" ? 'mr-md-3' : 'ml-md-3'}}">
     @if($web_config['guest_checkout_status'] || auth('customer')->check())
-        <a class="navbar-tool-icon-box  dropdown-toggle" href="{{route('shop-cart')}}">
+        <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="{{route('shop-cart')}}">
             <span class="navbar-tool-label">
                 @php($cart=\App\Utils\CartManager::get_cart())
                 {{$cart->count()}}
@@ -14,24 +14,24 @@
             </span>
         </a>
     @else
-        <a class="navbar-tool-icon-box  dropdown-toggle" href="{{ route('customer.auth.login') }}">
+        <a class="navbar-tool-icon-box bg-secondary dropdown-toggle" href="{{ route('customer.auth.login') }}">
             <span class="navbar-tool-label">
                 @php($cart=\App\Utils\CartManager::get_cart())
                 {{$cart->count()}}
             </span>
-            <img src="{{ asset('public/myfigma/add-cart_icon.png') }}"  alt="Add To Cart" class="addtocart-icon">
+            <i class="navbar-tool-icon czi-cart"></i>
         </a>
-        <!---<a class="navbar-tool-text ms-2"
+        <a class="navbar-tool-text ms-2"
            href="{{ route('customer.auth.login') }}">
             <small>{{translate('my_cart')}}</small>
             <span class="cart-total-price font-bold fs-14">
                 {{ webCurrencyConverter(amount: \App\Utils\CartManager::cart_total_applied_discount(\App\Utils\CartManager::get_cart()))}}
             </span>
-        </a>-->
+        </a>
     @endif
 
     <div
-        class="dropdown-menu cart-dropdown dropdown-menu-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} __w-20rem cart-dropdown py-0">
+        class="dropdown-menu dropdown-menu-{{Session::get('direction') === "rtl" ? 'left' : 'right'}} __w-20rem cart-dropdown py-0">
         <div class="widget widget-cart px-3 pt-2 pb-3">
             <div class="widget-cart-top rounded">
                 <h6 class="m-0">
@@ -76,24 +76,12 @@
                     @php($total_tax=0)
                     @foreach($cart as  $cartItem)
                         @php($product=\App\Models\Product::find($cartItem['product_id']))
-
-                        <?php
-                            $getProductCurrentStock = $product->current_stock;
-                            if(!empty($product->variation)) {
-                                foreach(json_decode($product->variation, true) as $productVariantSingle) {
-                                    if($productVariantSingle['type'] == $cartItem->variant) {
-                                        $getProductCurrentStock = $productVariantSingle['qty'];
-                                    }
-                                }
-                            }
-                        ?>
-
                         <div class="widget-cart-item">
                             <div class="media">
                                 <a class="d-block me-2 position-relative overflow-hidden"
                                    href="{{route('product',$cartItem['slug'])}}">
                                     <img width="64" class="{{ $product ? ($product->status == 0?'blur-section':'') : 'blur-section' }}"
-                                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'backend-product') }}"
+                                         src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$cartItem['thumbnail'], type: 'backend-product') }}"
                                          alt="{{ translate('product') }}"/>
                                     @if (!$product || $product->status == 0)
                                         <span class="temporary-closed position-absolute text-center p-2">
@@ -111,7 +99,8 @@
                                         </h6>
                                         @if(!empty($cartItem['variant']))
                                             <div>
-                                                <span class="__text-12px">{{translate('variant')}} : {{$cartItem['variant']}}</span>
+                                                <span
+                                                    class="__text-12px">{{translate('variant')}} : {{$cartItem['variant']}}</span>
                                             </div>
                                         @endif
                                         <div class="widget-product-meta">
@@ -132,12 +121,7 @@
                                                 data-action="-1"
                                                 data-event="minus"
                                                 >
-                                                @if($getProductCurrentStock < $cartItem['quantity'] || $cartItem['quantity'] == (isset($product->minimum_order_qty) ? $product->minimum_order_qty : 1))
-                                                    <i class="tio-delete-outlined text-danger fs-10"></i>
-                                                @else
-                                                    <i class="tio-remove fs-10"></i>
-                                                @endif
-
+                                                <i class="{{ $cartItem['quantity'] == (isset($product->minimum_order_qty) ? $product->minimum_order_qty : 1) ? 'tio-delete-outlined text-danger fs-10' : 'tio-remove fs-10' }}"></i>
                                             </div>
                                             <input type="text"
                                                 class="quantity__qty cart-qty-input form-control p-0 text-center cartQuantity{{$cartItem['id']}} action-update-cart-quantity"
@@ -147,7 +131,6 @@
                                                 data-product-id="{{ $cartItem['product_id'] }}"
                                                 data-action="0"
                                                 data-event=""
-                                               data-current-stock="{{ $getProductCurrentStock }}"
                                                 data-min="{{ isset($product->minimum_order_qty) ? $product->minimum_order_qty : 1 }}"
                                                 autocomplete="off" required
                                                 oninput="this.value = this.value.replace(/[^0-9]/g, '')">
@@ -225,7 +208,7 @@
                     </a>
                 @else
                     <a class="btn btn--primary btn-sm btn-block font-bold rounded text-capitalize"
-                       href="{{route('customer.auth.login',['intend'=>'checkout-details'])}}">
+                       href="{{route('customer.auth.login')}}">
                         {{translate('proceed_to_checkout')}}
                     </a>
                 @endif

@@ -1,15 +1,8 @@
 'use strict';
 $(document).on('ready',function (){
     initAutocomplete()
+
 })
-
-$("#update-error-message").hide();
-
-$("#update-button-message").click(function(){
-    $("#update-error-message").slideDown();
-});
-
-
 $('#free-delivery-responsibility').on('change', function () {
     let getAmountAdminArea = $('#free-delivery-over-amount-admin-area');
     if ($(this).val() === 'admin') {
@@ -69,11 +62,7 @@ $('#update-settings').on('submit', function (e) {
 });
 
 $(document).ready(function () {
-    $('#dataTable').DataTable({
-        language: {
-            searchPlaceholder: 'Enter Keywords'
-        }
-    });
+    $('#dataTable').DataTable();
 });
 
 $(document).on('click', '.edit', function () {
@@ -134,25 +123,24 @@ $('#software-update-form').on('submit', function (e) {
     });
 });
 
-async function initAutocomplete() {
+function initAutocomplete() {
     let latitude = $("#get-default-latitude").data('latitude');
     let longitude = $("#get-default-longitude").data('longitude');
     let myLatLng = {
         lat: latitude,
         lng: longitude
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location-map-canvas"), {
         center: {
             lat: latitude,
             lng: longitude
         },
         zoom: 13,
-        mapId: "roadmap",
+        mapTypeId: "roadmap",
     });
 
-    var marker = new AdvancedMarkerElement({
+    var marker = new google.maps.Marker({
         position: myLatLng,
         map: map,
     });
@@ -163,7 +151,7 @@ async function initAutocomplete() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
+        marker.setPosition(latlng);
         map.panTo(latlng);
 
         document.getElementById('latitude').value = coordinates['lat'];
@@ -174,6 +162,7 @@ async function initAutocomplete() {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[1]) {
                     document.getElementById('shop-address').value = results[1].formatted_address;
+                    console.log(results[1].formatted_address);
                 }
             }
         });
@@ -202,7 +191,7 @@ async function initAutocomplete() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new AdvancedMarkerElement({
+            var mrkr = new google.maps.Marker({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -225,3 +214,4 @@ async function initAutocomplete() {
         map.fitBounds(bounds);
     });
 };
+

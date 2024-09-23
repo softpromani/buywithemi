@@ -28,27 +28,27 @@
                 <div class="cz-preview">
                     <div id="sync1" class="owl-carousel owl-theme product-thumbnail-slider">
                         @if($product->images!=null && json_decode($product->images)>0)
-                            @if(json_decode($product->colors) && count($product->color_images_full_url)>0)
-                                @foreach ($product->color_images_full_url as $key => $photo)
-                                    @if($photo['color'] != null)
+                            @if(json_decode($product->colors) && $product->color_image)
+                                @foreach (json_decode($product->color_image) as $key => $photo)
+                                    @if($photo->color != null)
                                         <div class="product-preview-item d-flex align-items-center justify-content-center">
                                             <img class="show-imag img-responsive max-height-500px"
-                                                 src="{{ getStorageImages(path: $photo['image_name'], type: 'product') }}"
+                                                 src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type: 'product') }}"
                                                  alt="{{ translate('product') }}" width="">
                                         </div>
                                     @else
                                         <div class="product-preview-item d-flex align-items-center justify-content-center">
                                             <img class="show-imag img-responsive max-height-500px"
-                                                 src="{{ getStorageImages(path:$photo['image_name'], type: 'product') }}"
+                                                 src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type: 'product') }}"
                                                  alt="{{ translate('product') }}" width="">
                                         </div>
                                     @endif
                                 @endforeach
                             @else
-                                @foreach ($product->images_full_url as $key => $photo)
+                                @foreach (json_decode($product->images) as $key => $photo)
                                     <div class="product-preview-item d-flex align-items-center justify-content-center">
                                         <img class="show-imag img-responsive max-height-500px"
-                                             src="{{ getStorageImages(path: $photo, type: 'product') }}"
+                                             src="{{ getValidImage(path: 'storage/app/public/product/'.$photo, type: 'product') }}"
                                              alt="{{ translate('product') }}">
                                     </div>
                                 @endforeach
@@ -63,12 +63,6 @@
                                 class="btn __text-18px border wishList-pos-btn d-sm-none product-action-add-wishlist">
                             <i class="fa {{($wishlist_status == 1?'fa-heart':'fa-heart-o')}} wishlist_icon_{{$product['id']}} web-text-primary"
                                id="wishlist_icon_{{$product['id']}}" aria-hidden="true"></i>
-                            <div class="wishlist-tooltip" x-placement="top">
-                                <div class="arrow"></div><div class="inner">
-                                    <span class="add">{{translate('added_to_wishlist')}}</span>
-                                    <span class="remove">{{translate('removed_from_wishlist')}}</span>
-                                </div>
-                            </div>
                         </button>
 
                         <div class="sharethis-inline-share-buttons share--icons text-align-direction">
@@ -80,14 +74,14 @@
                     <div class="d-flex">
                         <div id="sync2" class="owl-carousel owl-theme product-thumb-slider max-height-100px d--none">
                             @if($product->images!=null && json_decode($product->images)>0)
-                                @if(json_decode($product->colors) && count($product->color_images_full_url)>0)
-                                    @foreach ($product->color_images_full_url as $key => $photo)
-                                        @if($photo['color'] != null)
+                                @if(json_decode($product->colors) && $product->color_image)
+                                    @foreach (json_decode($product->color_image) as $key => $photo)
+                                        @if($photo->color != null)
                                             <div class="">
                                                 <a href="javascript:"
                                                    class="product-preview-thumb d-flex align-items-center justify-content-center">
-                                                    <img class="click-img" id="preview-img{{$photo['color']}}"
-                                                         src="{{ getStorageImages(path:$photo['image_name'], type: 'product') }}"
+                                                    <img class="click-img" id="preview-img{{$photo->color}}"
+                                                         src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type: 'product') }}"
                                                          alt="{{ translate('product') }}">
                                                 </a>
                                             </div>
@@ -96,19 +90,19 @@
                                                 <a href="javascript:"
                                                    class="product-preview-thumb d-flex align-items-center justify-content-center">
                                                     <img class="click-img" id="preview-img{{$key}}"
-                                                         src="{{ getStorageImages(path: $photo['image_name'], type: 'product') }}"
+                                                         src="{{ getValidImage(path: 'storage/app/public/product/'.$photo->image_name, type: 'product') }}"
                                                          alt="{{ translate('product') }}">
                                                 </a>
                                             </div>
                                         @endif
                                     @endforeach
                                 @else
-                                    @foreach ($product->images_full_url as $key => $photo)
+                                    @foreach (json_decode($product->images) as $key => $photo)
                                         <div class="">
                                             <a href="javascript:"
                                                class="product-preview-thumb d-flex align-items-center justify-content-center">
                                                 <img class="click-img" id="preview-img{{$key}}"
-                                                     src="{{ getStorageImages(path: $photo, type: 'product') }}"
+                                                     src="{{ getValidImage(path: 'storage/app/public/product/'.$photo, type: 'product') }}"
                                                      alt="{{ translate('product') }}">
                                             </a>
                                         </div>
@@ -176,7 +170,7 @@
                                                     class="quick-view-preview-image-by-color shadow-border"
                                                     for="{{ $product->id }}-color-{{ str_replace('#','',$color) }}"
                                                     data-toggle="tooltip"
-                                                    data-key="{{ str_replace('#','',$color) }}" data-title="{{ \App\Utils\get_color_name($color) }}">
+                                                    data-key="{{ str_replace('#','',$color) }}">
                                                     <span class="outline"></span>
                                                 </label>
                                             </li>
@@ -213,39 +207,6 @@
                             </div>
                         </div>
                     @endforeach
-
-                    @php($extensionIndex=0)
-                    @if($product['product_type'] == 'digital' && $product['digital_product_file_types'] && count($product['digital_product_file_types']) > 0 && $product['digital_product_extensions'])
-                        @foreach($product['digital_product_extensions'] as $extensionKey => $extensionGroup)
-                            <div class="row flex-start mx-0 align-items-center mb-1">
-                                <div class="product-description-label text-dark font-bold {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}} text-capitalize mb-2">
-                                    {{ translate($extensionKey) }} :
-                                </div>
-                                <div>
-                                    @if(count($extensionGroup) > 0)
-                                        <div class="list-inline checkbox-alphanumeric checkbox-alphanumeric--style-1 mb-0 mx-1 flex-start row ps-0">
-                                            @foreach($extensionGroup as $index => $extension)
-                                                <div>
-                                                    <div class="for-mobile-capacity">
-                                                        <input type="radio" hidden
-                                                               id="extension_{{ str_replace(' ', '-', $extension) }}"
-                                                               name="variant_key"
-                                                               value="{{ $extensionKey.'-'.preg_replace('/\s+/', '-', $extension) }}"
-                                                            {{ $extensionIndex == 0 ? 'checked' : ''}}>
-                                                        <label for="extension_{{ str_replace(' ', '-', $extension) }}"
-                                                               class="__text-12px">
-                                                            {{ $extension }}
-                                                        </label>
-                                                    </div>
-                                                </div>
-                                                @php($extensionIndex++)
-                                            @endforeach
-                                        </div>
-                                    @endif
-                                </div>
-                            </div>
-                        @endforeach
-                    @endif
 
                     <div class="mb-3">
                         <div class="product-quantity d-flex flex-column __gap-15">
@@ -309,8 +270,7 @@
                                 {{translate('add_to_cart')}}
                             </button>
                         @else
-                            <button class="btn btn-secondary action-buy-now-this-product"
-                            type="button">
+                            <button class="btn btn-secondary action-buy-now-this-product" type="button">
                                 {{translate('buy_now')}}
                             </button>
                             <button class="btn btn--primary string-limit action-add-to-cart-form" type="button" data-update-text="{{ translate('update_cart') }}" data-add-text="{{ translate('add_to_cart') }}">
@@ -324,12 +284,6 @@
                             <span class="fs-14 text-muted align-bottom countWishlist-{{$product['id']}}">
                                 {{$countWishlist}}
                             </span>
-                            <div class="wishlist-tooltip" x-placement="top">
-                                <div class="arrow"></div><div class="inner">
-                                    <span class="add">{{translate('added_to_wishlist')}}</span>
-                                    <span class="remove">{{translate('removed_from_wishlist')}}</span>
-                                </div>
-                            </div>
                         </button>
 
                         @if(($product->added_by == 'seller' && ($seller_temporary_close ||

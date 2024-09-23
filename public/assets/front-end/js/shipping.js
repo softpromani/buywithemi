@@ -12,21 +12,6 @@ $(document).ready(function() {
         let billing_value = $('.selected_' + billingsActiveId).val();
         billing_method_select(billing_value)
     }
-    try {
-        initializePhoneInput(".phone-input-with-country-picker-5", ".country-picker-phone-number-5");
-    } catch (error) {}
-
-    try {
-        initializePhoneInput(".phone-input-with-country-picker-4", ".country-picker-phone-number-4");
-    } catch (error) {}
-
-    try {
-        initializePhoneInput(".phone-input-with-country-picker-3", ".country-picker-phone-number-3");
-    } catch (error) {}
-
-    try {
-        initializePhoneInput(".phone-input-with-country-picker-2", ".country-picker-phone-number-2");
-    } catch (error) {}
 })
 
 let messageUpdateThisAddress = $('#message-update-this-address').data('text');
@@ -46,7 +31,7 @@ function shipping_method_select(get_value){
     let shipping_value= JSON.parse(get_value);
     $('#name').val(shipping_value.contact_person_name);
     $('#phone').val(shipping_value.phone);
-    $('#alternate_phone').val(shipping_value.alternate_phone);
+    $('#phone').keypress();
     $('#address').val(shipping_value.address);
     $('#city').val(shipping_value.city);
     $('#zip').val(shipping_value.zip);
@@ -75,7 +60,7 @@ function billing_method_select(get_billing_value){
     let billing_method_id = $('.select_billing_address.active input[name="billing_method_id"]').val()
     $('#billing_contact_person_name').val(billing_value.contact_person_name);
     $('#billing_phone').val(billing_value.phone);
-    $('#alternate_billing_phone').val(billing_value.alternate_phone);
+    $('#billing_phone').keypress();
     $('#billing_address').val(billing_value.address);
     $('#billing_city').val(billing_value.city);
     $('#billing_zip').val(billing_value.zip);
@@ -95,23 +80,22 @@ $('.add-another-address').on('click', function (){
 
 let defaultLatitudeAddressValue = $('#default-latitude-address').data('value');
 let defaultLongitudeAddressValue = $('#default-longitude-address').data('value');
-async function initAutocomplete() {
+function initAutocomplete() {
     var myLatLng = {
         lat: defaultLatitudeAddressValue,
         lng: defaultLongitudeAddressValue
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location_map_canvas"), {
         center: {
             lat: defaultLatitudeAddressValue,
             lng: defaultLongitudeAddressValue
         },
         zoom: 13,
-        mapId: "roadmap",
+        mapTypeId: "roadmap",
     });
 
-    var marker = new AdvancedMarkerElement({
+    var marker = new google.maps.Marker({
         position: myLatLng,
         map: map,
     });
@@ -122,7 +106,7 @@ async function initAutocomplete() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
+        marker.setPosition(latlng);
         map.panTo(latlng);
 
         document.getElementById('latitude').value = coordinates['lat'];
@@ -169,7 +153,7 @@ async function initAutocomplete() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new AdvancedMarkerElement({
+            var mrkr = new google.maps.Marker({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -180,8 +164,7 @@ async function initAutocomplete() {
                 document.getElementById('longitude').value = this.position.lng();
 
             });
-            // *** Update the address field when a place is selected ***
-            document.getElementById('address').value = place.formatted_address;
+
             markers.push(mrkr);
 
             if (place.geometry.viewport) {
@@ -199,25 +182,24 @@ $(document).on("keydown", "input", function (e) {
     if (e.which == 13) e.preventDefault();
 })
 
-async function initAutocompleteBilling() {
+function initAutocompleteBilling() {
     var myLatLng = {
         lat: defaultLatitudeAddressValue,
         lng: defaultLongitudeAddressValue
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location_map_canvas_billing"), {
         center: {
             lat: defaultLatitudeAddressValue,
             lng: defaultLongitudeAddressValue
         },
         zoom: 13,
-        mapId: "roadmap",
+        mapTypeId: "roadmap",
     });
 
-    var marker = new AdvancedMarkerElement({
-        map,
+    var marker = new google.maps.Marker({
         position: myLatLng,
+        map: map,
     });
 
     marker.setMap(map);
@@ -226,7 +208,7 @@ async function initAutocompleteBilling() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
+        marker.setPosition(latlng);
         map.panTo(latlng);
 
         document.getElementById('billing_latitude').value = coordinates['lat'];
@@ -275,7 +257,7 @@ async function initAutocompleteBilling() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new AdvancedMarkerElement({
+            var mrkr = new google.maps.Marker({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -286,7 +268,7 @@ async function initAutocompleteBilling() {
                 document.getElementById('billing_longitude').value = this.position.lng();
 
             });
-            document.getElementById('billing_address').value = place.formatted_address;
+
             markers.push(mrkr);
 
             if (place.geometry.viewport) {
@@ -346,10 +328,6 @@ function checkoutFromShipping() {
         billing_address_same_shipping = false;
     }
 
-    let isCheckCreateAccount = $('#is_check_create_account');
-    let customerPassword = $('#customer_password');
-    let customerConfirmPassword = $('#customer_confirm_password');
-
     $.ajaxSetup({
         headers: {
             'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
@@ -361,18 +339,13 @@ function checkoutFromShipping() {
             physical_product: physical_product,
             shipping: physical_product === 'yes' ? $('#address-form').serialize() : null,
             billing: $('#billing-address-form').serialize(),
-            billing_addresss_same_shipping: billing_address_same_shipping,
-            is_check_create_account: isCheckCreateAccount && isCheckCreateAccount.prop("checked") ? 1 : 0,
-            customer_password: customerPassword ? customerPassword.val() : null,
-            customer_confirm_password: customerConfirmPassword ? customerConfirmPassword.val() : null,
+            billing_addresss_same_shipping: billing_address_same_shipping
         },
 
         beforeSend: function () {
             $('#loading').show();
         },
         success: function (data) {
-            // console.log(errors)
-            // console.log(data.errors)
             if (data.errors) {
                 for (var i = 0; i < data.errors.length; i++) {
                     toastr.error(data.errors[i].message, {
@@ -388,21 +361,11 @@ function checkoutFromShipping() {
             $('#loading').hide();
         },
         error: function (data) {
-            if (data.errors) {
-                for (var i = 0; i < data.errors.length; i++) {
-                    toastr.error(data.errors[i].message, {
-                        CloseButton: true,
-                        ProgressBar: true
-                    });
-                }
-            } else {
-                let error_msg = data.responseJSON.errors;
-                console.log(data.responseJSON)
-                toastr.error(error_msg, {
-                    CloseButton: true,
-                    ProgressBar: true
-                });
-            }
+            let error_msg = data.responseJSON.errors;
+            toastr.error(error_msg, {
+                CloseButton: true,
+                ProgressBar: true
+            });
         }
     });
 }

@@ -100,7 +100,7 @@ $('#from_date,#to_date').change(function () {
 })
 
 $("[class^=show-more-content]").hide();
-$('.toggle-btn').on('click',function (){
+$('.toggle_btn').on('click',function (){
     let show_more = "#show-more-" + $(this).attr('data-id')
     let show_less = "#show-less-" + $(this).attr('data-id')
     let show_more_content = "#show-more-content-" + $(this).attr('data-id')

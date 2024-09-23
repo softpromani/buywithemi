@@ -76,16 +76,16 @@ class HomeController extends Controller
             return BusinessSetting::where('type', 'product_brand')->first()->value;
         });
 
-        $homeCategories = Cache::remember('home_categories', 60, function() {
-            $homeCategories = Category::where('home_status', true)->priority()->get();
-            $homeCategories->map(function ($data) {
+        $home_categories = Cache::remember('home_categories', 60, function() {
+            $home_categories = Category::where('home_status', true)->priority()->get();
+            $home_categories->map(function ($data) {
                 $id = '"' . $data['id'] . '"';
                 $homeCategoriesProducts = Product::active()
                     ->withCount('reviews')
                     ->where('category_ids', 'like', "%{$id}%");
                 $data['products'] = ProductManager::getPriorityWiseCategoryWiseProductsQuery(query: $homeCategoriesProducts, dataLimit: 10);
             });
-            return $homeCategories;
+            return $home_categories;
         });
 
         $current_date = date('Y-m-d H:i:s');
@@ -231,7 +231,7 @@ class HomeController extends Controller
         return view(VIEW_FILE_NAMES['home'],
             compact(
                 'flashDeal', 'featuredProductsList', 'topRated', 'bestSellProduct', 'latest_products', 'categories', 'brands',
-                'deal_of_the_day', 'topVendorsList', 'homeCategories', 'brand_setting', 'main_banner', 'main_section_banner',
+                'deal_of_the_day', 'topVendorsList', 'home_categories', 'brand_setting', 'main_banner', 'main_section_banner',
                 'current_date', 'recommendedProduct', 'footer_banner', 'newArrivalProducts', 'home_category_banner', 'main_banner_right'
             )
         );

@@ -17,11 +17,18 @@
                 <form action="{{route('messages')}}" method="post" id="seller-chat-form">
                     @csrf
 
-                    <input value="{{ isset($user_type) && $user_type == 'admin' ? 0 : $seller->id}}" name="vendor_id" hidden>
+                    @if(isset($seller) && isset($user_type) && $user_type == 'admin')
+                        <input value="{{ 0 }}" name="shop_id" hidden>
+                        <input value="{{ 0 }}" name="admin_id" hidden>
+                    @elseif(isset($seller) && isset($user_type) && $user_type == 'seller')
+                        <input value="{{ $seller->shop['id'] }}" name="shop_id" hidden>
+                        <input value="{{ $seller['id'] }}" name="seller_id" hidden>
+                    @endif
+
                     <textarea name="message" class="form-control min-height-100px max-height-200px" required placeholder="{{ translate('Write_here') }}..."></textarea>
                     <br>
                     <div class="justify-content-end gap-2 d-flex flex-wrap">
-                        <a href="{{route('chat', ['type' => 'vendor'])}}" class="btn btn-soft-primary bg--secondary border">
+                        <a href="{{route('chat', ['type' => 'seller'])}}" class="btn btn-soft-primary bg--secondary border">
                             {{translate('go_to_chatbox')}}
                         </a>
                         <button class="btn btn--primary text-white">{{translate('send')}}</button>

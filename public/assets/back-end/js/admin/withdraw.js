@@ -150,7 +150,6 @@ function formSubmit(){
 }
 $('.withdraw-request-file-export').on('click',function (){
     let checkedStatusValuesArray = $('.status-filter').val();
-    let queryParams = '&status=' +checkedStatusValuesArray;
+    let queryParams = '?status=' + checkedStatusValuesArray;
     window.location.href = $(this).data('action')+queryParams;
 });
-

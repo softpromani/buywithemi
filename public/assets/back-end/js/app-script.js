@@ -25,27 +25,6 @@ toastr.options = {
     hideMethod: "fadeOut",
 };
 $(document).on("ready", function () {
-    $(".view--more").each(function () {
-        const viewItem = $(this);
-        const initialHeight = $(this).height();
-        if (viewItem.height() > 130) {
-            viewItem.addClass("view-more-collapsable");
-            const btn = viewItem.find(".expandable-btn");
-            btn.removeClass("d-none");
-            btn.on("click", function () {
-                if (btn.find(".more").hasClass("d-none")) {
-                    viewItem.css("height", "130px");
-                    btn.find(".more").removeClass("d-none");
-                    btn.find(".less").addClass("d-none");
-                } else {
-                    viewItem.css("height", initialHeight + 40);
-                    btn.find(".less").removeClass("d-none");
-                    btn.find(".more").addClass("d-none");
-                }
-            });
-        }
-    });
-
     $("img.svg").each(function () {
         let $img = jQuery(this);
         let imgID = $img.attr("id");

@@ -21,8 +21,7 @@ $('#customZipFileUpload').change(function (e) {
     $('#zipFileLabel').html(fileName);
 });
 
-$('.copy-path').on('click', function () {
-    console.log($(this))
+$('#copy-path').on('click',function (){
     navigator.clipboard.writeText($(this).data('path'));
     toastr.success($('#get-file-copy-success-message').data('success'), {
         CloseButton: true,

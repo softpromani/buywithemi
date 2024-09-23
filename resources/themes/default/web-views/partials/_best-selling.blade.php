@@ -1,6 +1,6 @@
 <div class="col-lg-6 px-max-md-0">
-    <div class="bestsellingproduct h-100">
-        <div class="managebestseelingproduct">
+    <div class="card card __shadow h-100">
+        <div class="card-body p-xl-35">
             <div class="row d-flex justify-content-between mx-1 mb-3">
                 <div>
                     <img class="size-30" src="{{theme_asset(path: "public/assets/front-end/png/best-sellings.png")}}"
@@ -8,7 +8,7 @@
                     <span class="font-bold pl-1">{{ translate('best_sellings')}}</span>
                 </div>
                 <div>
-                    <a class="text-capitalize view-all-text "
+                    <a class="text-capitalize view-all-text web-text-primary"
                        href="{{route('products',['data_from'=>'best-selling','page'=>1])}}">{{ translate('view_all')}}
                         <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
                     </a>
@@ -35,7 +35,7 @@
                                 <div class="d-flex flex-wrap">
                                     <div class="best-selleing-image">
                                         <img class="rounded"
-                                             src="{{ getStorageImages(path: $bestSell?->product?->thumbnail_full_url, type: 'product') }}"
+                                             src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$bestSell->product['thumbnail'], type: 'product') }}"
                                              alt="{{ translate('product') }}"/>
                                     </div>
                                     <div class="best-selling-details">

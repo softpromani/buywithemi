@@ -299,28 +299,26 @@ function amountDateUpdate(t){
 
 
 /** shipping address  map */
-async function shippingAddressMap() {
+function initAutocomplete() {
     let latitude = $("#shipping-latitude").data('latitude');
     let longitude = $("#shipping-longitude").data('longitude');
     let myLatLng = {
         lat: latitude,
         lng: longitude
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location_map_canvas_shipping"), {
         center: {
             lat: latitude,
             lng: longitude
         },
         zoom: 13,
-        mapId: 'roadmap'
+        mapTypeId: "roadmap",
     });
 
-    var marker = new AdvancedMarkerElement({
-        map,
+    var marker = new google.maps.Marker({
         position: myLatLng,
-
+        map: map,
     });
 
     marker.setMap(map);
@@ -329,7 +327,7 @@ async function shippingAddressMap() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.position={lat:coordinates['lat'], lng:coordinates['lng']};
+        marker.setPosition(latlng);
         map.panTo(latlng);
 
         document.getElementById('latitude').value = coordinates['lat'];
@@ -368,7 +366,7 @@ async function shippingAddressMap() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new AdvancedMarkerElement({
+            var mrkr = new google.maps.Marker({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -397,24 +395,23 @@ $(document).on("keydown", "input", function (e) {
 });
 
 /** billing address  map */
-async function billingAddressMap() {
+function billing_map() {
     let latitude = $("#billing-latitude").data('latitude');
     let longitude = $("#billing-longitude").data('longitude');
     var myLatLng = {
         lat: latitude,
         lng: longitude
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location_map_canvas_billing"), {
         center: {lat: latitude, lng: longitude},
         zoom: 13,
-        mapId: 'roadmap'
+        mapTypeId: "roadmap",
     });
 
-    var marker = new AdvancedMarkerElement({
-        map,
+    var marker = new google.maps.Marker({
         position: myLatLng,
+        map: map,
     });
 
     marker.setMap(map);
@@ -423,7 +420,7 @@ async function billingAddressMap() {
         var coordinates = JSON.stringify(mapsMouseEvent.latLng.toJSON(), null, 2);
         var coordinates = JSON.parse(coordinates);
         var latlng = new google.maps.LatLng(coordinates['lat'], coordinates['lng']);
-        marker.position = {lat:coordinates['lat'], lng:coordinates['lng']};
+        marker.setPosition(latlng);
         map.panTo(latlng);
 
         document.getElementById('billing_latitude').value = coordinates['lat'];
@@ -433,6 +430,7 @@ async function billingAddressMap() {
             if (status == google.maps.GeocoderStatus.OK) {
                 if (results[1]) {
                     document.getElementById('billing_address').value = results[1].formatted_address;
+                    console.log(results[1].formatted_address);
                 }
             }
         });
@@ -461,7 +459,7 @@ async function billingAddressMap() {
                 console.log("Returned place contains no geometry");
                 return;
             }
-            var mrkr = new AdvancedMarkerElement({
+            var mrkr = new google.maps.Marker({
                 map,
                 title: place.name,
                 position: place.geometry.location,
@@ -490,44 +488,54 @@ $(document).on("keydown", "input", function (e) {
     if (e.which == 13) e.preventDefault();
 });
 
-async function locationShowingMap() {
+function show_location_map() {
     let latitude = $("#shipping-latitude").data('latitude');
     let longitude = $("#shipping-longitude").data('longitude');
-    let myLatLng = {
+    let customer_name = $("#customer-name").data('text');
+    let location_icon = $("#location-icon").data('path');
+    let shipping_address = $("#shipping-address").data('text');
+    var myLatLng = {
         lat: latitude,
         lng: longitude
     };
-    const { Map } = await google.maps.importLibrary("maps");
-    const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+
     const map = new google.maps.Map(document.getElementById("location_map_canvas"), {
         center: {
-            lat: latitude,
-            lng: longitude
-        },
-        zoom: 13,
-        mapId: 'roadmap'
+            lat: latitude, lng: longitude,
+            zoom: 13,
+            mapTypeId: "roadmap",
+        }
     });
 
-    var marker = new AdvancedMarkerElement({
-        position: myLatLng,
-        map: map,
+    if ($("#is-shipping-exist").data('status') === 'true') {
+        var marker = new google.maps.Marker({
+            position: new google.maps.LatLng(latitude, longitude),
+            map: map,
+            title: customer_name,
+            icon: location_icon
+        });
+
+        google.maps.event.addListener(marker, 'click', (function (marker) {
+            return function () {
+                infowindow.setContent("<div class='float-left'><img class='__inline-5' src=''></div><div class='float-right __p-10'><b>customer_name</b><br/>shipping-address</div>"
+                );
+                infowindow.open(map, marker);
+            }
+        })(marker));
+        locationbounds.extend(marker.getPosition());
+    }
+    google.maps.event.addListenerOnce(map, 'idle', function () {
+        map.fitBounds(locationbounds);
     });
 
-    marker.setMap(map);
-    var geocoder = geocoder = new google.maps.Geocoder();
-    google.maps.event.addListener(map, 'click', function (mapsMouseEvent) {
-        var latlng = new google.maps.LatLng(latitude, longitude);
-        marker.position = {lat:latitude,lng:longitude};
-        map.panTo(latlng);
-    });
 }
 
 /*End Show location on map*/
 
-async function mapCallBackFunction() {
-    shippingAddressMap();
-    billingAddressMap();
-    locationShowingMap();
+function map_callback_fucntion() {
+    initAutocomplete();
+    billing_map();
+    show_location_map();
 }
 
 

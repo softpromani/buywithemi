@@ -5,41 +5,29 @@
     <meta charset="utf-8">
     <title>@yield('title')</title>
     <meta name="_token" content="{{csrf_token()}}">
-
-    <meta name="google-site-verification" content="{{getWebConfig('google_search_console_code')}}">
-    <meta name="msvalidate.01" content="{{getWebConfig('bing_webmaster_code')}}">
-    <meta name="baidu-site-verification" content="{{getWebConfig('baidu_webmaster_code')}}">
-    <meta name="yandex-verification" content="{{getWebConfig('yandex_webmaster_code')}}">
-
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="apple-touch-icon" sizes="180x180" href="{{ $web_config['fav_icon']['path'] }}">
-    <link rel="icon" type="image/png" sizes="32x32" href="{{ $web_config['fav_icon']['path'] }}">
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.css') }}" async >
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/tiny-slider.css') }}" async >
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/drift-basic.min.css') }}" async >
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/css/lightgallery.min.css') }}" async >
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/theme.css') }}" async >
-    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/slick.css') }}" async >
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/font-awesome.min.css') }}" async >
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/css/toastr.css') }}" async />
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/master.css') }}" async />
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/roboto-font.css')  }}" async >
-    {{-- <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/helvetica.css')  }}" async > --}}
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/css/lightbox.css') }}" async >
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/vendor/icon-set/style.css') }}" async >
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}" defer >
-
+    <link rel="apple-touch-icon" sizes="180x180" href="{{theme_asset(path: 'storage/app/public/company')}}/{{$web_config['fav_icon']['path']}}">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{theme_asset(path: 'storage/app/public/company')}}/{{$web_config['fav_icon']['path']}}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/tiny-slider.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/drift-basic.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/css/lightgallery.min.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/theme.css') }}">
+    <link rel="stylesheet" media="screen" href="{{ theme_asset(path: 'public/assets/front-end/css/slick.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/font-awesome.min.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/css/toastr.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/master.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/roboto-font.css')  }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/css/lightbox.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/back-end/vendor/icon-set/style.css') }}">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/owl.carousel.min.css') }}">
 
     @stack('css_or_js')
 
-    @include(VIEW_FILE_NAMES['robots_meta_content_partials'])
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/home.css') }}"/>
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/responsive1.css') }}"/>
 
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/home.css') }}" async />
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/app_style.css') }}" async />
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/responsive1.css') }}" async />
-
-    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/style.css') }}" async >
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@100..900&family=Space+Grotesk:wght@300..700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ theme_asset(path: 'public/assets/front-end/css/style.css') }}">
 
     <style>
         :root {
@@ -55,7 +43,7 @@
             --text-align-direction-alt: {{ Session::get('direction') === "rtl" ? 'left' : 'right'}};
         }
 
-        .dropdown-menu:not(.m-0) {
+        .dropdown-menu {
             margin-{{ Session::get('direction') === "rtl" ? 'right' : 'left' }}: -8px !important;
         }
 
@@ -100,7 +88,6 @@
             </noscript>
         <!-- End Facebook Pixel Code -->
     @endif
-
 </head>
 
 <body class="toolbar-enabled">
@@ -115,10 +102,8 @@
 @include('layouts.front-end.partials._modals')
 
 @include('layouts.front-end.partials._quick-view-modal')
-@include('layouts.front-end.partials.modal._buy-now')
 
 @include('layouts.front-end.partials._header')
-@include('layouts.front-end.partials._alert-message')
 
 <span id="authentication-status" data-auth="{{ auth('customer')->check() ? 'true' : 'false' }}"></span>
 
@@ -177,7 +162,6 @@
 <span id="route-quick-view" data-url="{{ route('quick-view') }}"></span>
 <span id="route-checkout-details" data-url="{{ route('checkout-details') }}"></span>
 <span id="route-checkout-payment" data-url="{{ route('checkout-payment') }}"></span>
-<span id="route-set-shipping-id" data-url="{{ route('customer.set-shipping-method') }}"></span>
 <span id="route-order-note" data-url="{{ route('order_note') }}"></span>
 <span id="password-error-message" data-max-character="{{translate('at_least_8_characters').'.'}}" data-uppercase-character="{{translate('at_least_one_uppercase_letter_').'(A...Z)'.'.'}}" data-lowercase-character="{{translate('at_least_one_uppercase_letter_').'(a...z)'.'.'}}"
       data-number="{{translate('at_least_one_number').'(0...9)'.'.'}}" data-symbol="{{translate('at_least_one_symbol').'(!...%)'.'.'}}"></span>
@@ -192,25 +176,38 @@
 @include('layouts.front-end.partials._footer')
 @include('layouts.front-end.partials.modal._dynamic-modals')
 
+<a class="btn-scroll-top btn--primary" href="#top" data-scroll>
+    <span class="btn-scroll-top-tooltip text-muted font-size-sm mr-2">{{ translate('top')}}</span>
+    <i class="btn-scroll-top-icon czi-arrow-up"></i>
+</a>
+<div class="__floating-btn">
+    @php($whatsapp = getWebConfig(name: 'whatsapp'))
+    @if(isset($whatsapp['status']) && $whatsapp['status'] == 1 )
+        <div class="wa-widget-send-button">
+            <a href="https://wa.me/{{ $whatsapp['phone'] }}?text=Hello%20there!" target="_blank">
+                <img src="{{theme_asset(path: 'public/assets/front-end/img/whatsapp.svg')}}" class="wa-messenger-svg-whatsapp wh-svg-icon" alt="{{ translate('Chat_with_us_on_WhatsApp') }}">
+            </a>
+        </div>
+    @endif
+</div>
 
-
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/jquery/dist/jquery-2.2.4.min.js') }}" ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bs-custom-file-input/dist/bs-custom-file-input.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/min/tiny-slider.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/js/lightbox.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/Drift.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/js/lightgallery.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lg-video.js/dist/lg-video.min.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/owl.carousel.min.js')}}" defer ></script>
-<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js" )}}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/theme.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/slick.js') }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/sweet_alert.js') }}" defer ></script>
-<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js") }}" defer ></script>
-<script src="{{ theme_asset(path: 'public/assets/front-end/js/custom.js') }}" defer ></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/jquery/dist/jquery-2.2.4.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bootstrap/dist/js/bootstrap.bundle.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/bs-custom-file-input/dist/bs-custom-file-input.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/simplebar/dist/simplebar.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/tiny-slider/dist/min/tiny-slider.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/smooth-scroll/dist/smooth-scroll.polyfills.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/js/lightbox.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/drift-zoom/dist/Drift.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lightgallery.js/dist/js/lightgallery.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/vendor/lg-video.js/dist/lg-video.min.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/owl.carousel.min.js')}}"></script>
+<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js" )}}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/theme.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/slick.js') }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/sweet_alert.js') }}"></script>
+<script src="{{ theme_asset(path: "public/assets/back-end/js/toastr.js") }}"></script>
+<script src="{{ theme_asset(path: 'public/assets/front-end/js/custom.js') }}"></script>
 
 {!! Toastr::message() !!}
 
@@ -292,21 +289,6 @@
         }
     });
 </script>
-@if(env('APP_MODE') == 'demo')
-    <script>
-        'use strict'
-        function checkDemoResetTime() {
-            let currentMinute = new Date().getMinutes();
-            if (currentMinute > 55 && currentMinute <= 60) {
-                $('#demo-reset-warning').addClass('active');
-            } else {
-                $('#demo-reset-warning').removeClass('active');
-            }
-        }
-        checkDemoResetTime();
-        setInterval(checkDemoResetTime, 60000);
-    </script>
-@endif
 
 @stack('script')
 

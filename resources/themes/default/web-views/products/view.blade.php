@@ -3,13 +3,13 @@
 @section('title',translate($data['data_from']).' '.translate('products'))
 
 @push('css_or_js')
-    <meta property="og:image" content="{{$web_config['web_logo']['path']}}"/>
+    <meta property="og:image" content="{{dynamicStorage(path: 'storage/app/public/company')}}/{{$web_config['web_logo']['path']}}"/>
     <meta property="og:title" content="Products of {{$web_config['name']}} "/>
     <meta property="og:url" content="{{env('APP_URL')}}">
     <meta property="og:description"
           content="{{ substr(strip_tags(str_replace('&nbsp;', ' ', $web_config['about']->value)),0,160) }}">
 
-    <meta property="twitter:card" content="{{$web_config['web_logo']['path']}}"/>
+    <meta property="twitter:card" content="{{dynamicStorage(path: 'storage/app/public/company')}}/{{$web_config['web_logo']['path']}}"/>
     <meta property="twitter:title" content="Products of {{$web_config['name']}}"/>
     <meta property="twitter:url" content="{{env('APP_URL')}}">
     <meta property="twitter:description"
@@ -73,76 +73,55 @@
 
 @section('content')
 
-    @php
-        $decimal_point_settings = getWebConfig(name: 'decimal_point_settings');
-    @endphp
+    @php($decimal_point_settings = getWebConfig(name: 'decimal_point_settings'))
 
-    <div class="category-title" dir="{{Session::get('direction')}}">
+    <div class="container py-3" dir="{{Session::get('direction')}}">
         <div class="search-page-header">
             <div>
-                @if($data['data_from'] == 'featured')
-                <h3 class="align-middle text-center mb-0"> {{ translate('featured_products') }}</h3>
-                @else
-                <h3 class="align-middle text-center mb-0"> {{ isset($data['brand_name']) ? ''.$data['brand_name'].'' : ''}}</h3>
-                @endif
-                <!-- <div><span>{{$products->total()}}</span> {{translate('items_found')}}</div> -->
+                <h5 class="font-semibold mb-1">{{translate(str_replace('_',' ',$data['data_from']))}} {{translate('products')}} {{ isset($data['brand_name']) ? '('.$data['brand_name'].')' : ''}}</h5>
+                <div><span class="view-page-item-count">{{$products->total()}}</span> {{translate('items_found')}}</div>
             </div>
-            <div class="d-flex align-items-center gap-2">
-                <form id="brand-filter-form rounded-10" action="{{ route('products') }}" method="GET">
-                    <input type="hidden" name="id" value="{{$data['id']}}">
-                    <input type="hidden" name="data_from" value="{{$data['data_from']}}">
-                    <div class="sorting-item">
-                        <label class="for-sorting" for="brand-filter" style="width: 100%;">
-                            <span style="color: #9B9B9B" class="d-block mr-1" >{{translate('filter_by')}}</span>
-                        </label>
-                        <select name="brand" id="brand-filter" class="form-control" onchange="this.form.submit()">
-                            <option value="">{{translate('Brands')}}</option>
-                            @php
-                                $productBrands = $products->pluck('brand')->unique()->filter()->values();
-                            @endphp
-                            @if(isset($productBrands) && !$productBrands->isEmpty())
-                                @foreach($productBrands as $brand)
-                                    @if($brand)
-                                        <option style="font-size: 0.875rem" value="{{ $brand['id'] }}" {{ request('brand') == $brand['id'] ? 'selected' : '' }}>
-                                            {{ $brand['name'] }}
-                                        </option>
-                                    @endif
-                                @endforeach
-                            @endif
-                        </select>
-                    </div>
-                </form>
-                <form id="search-form" class="d-none d-lg-block rounded-10" action="{{ route('products') }}" method="GET">
-                    <input hidden name="data_from" value="{{$data['data_from']}}">
-                    <div class="sorting-item">
-
-                        <label class="for-sorting" for="sorting">
-                            <span style="color: #9B9B9B" >{{translate('sort_by')}}</span>
-                        </label>
-                        <select class="product-list-filter-on-viewpage">
-                            <option value="latest" {{ request('sort_by') == 'latest' ? 'selected':'' }}>{{translate('latest')}}</option>
-                            <option
-                                value="low-high" {{ request('sort_by') == 'low-high' ? 'selected':'' }}>{{translate('low_to_High_Price')}} </option>
-                            <option
-                                value="high-low" {{ request('sort_by') == 'high-low' ? 'selected':'' }}>{{translate('High_to_Low_Price')}}</option>
-                            <option
-                                value="a-z" {{ request('sort_by') == 'a-z' ? 'selected':'' }}>{{translate('A_to_Z_Order')}}</option>
-                            <option
-                                value="z-a" {{ request('sort_by') == 'z-a' ? 'selected':'' }}>{{translate('Z_to_A_Order')}}</option>
-                        </select>
-                    </div>
-                </form>
-            </div>
-            {{--<div class="d-lg-none">
+            <form id="search-form" class="d-none d-lg-block" action="{{ route('products') }}" method="GET">
+                <input hidden name="data_from" value="{{$data['data_from']}}">
+                <div class="sorting-item">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="21" viewBox="0 0 20 21" fill="none">
+                        <path d="M11.6667 7.80078L14.1667 5.30078L16.6667 7.80078" stroke="#D9D9D9" stroke-width="2"
+                              stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M7.91675 4.46875H4.58341C4.3533 4.46875 4.16675 4.6553 4.16675 4.88542V8.21875C4.16675 8.44887 4.3533 8.63542 4.58341 8.63542H7.91675C8.14687 8.63542 8.33341 8.44887 8.33341 8.21875V4.88542C8.33341 4.6553 8.14687 4.46875 7.91675 4.46875Z"
+                            stroke="#D9D9D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path
+                            d="M7.91675 11.9688H4.58341C4.3533 11.9688 4.16675 12.1553 4.16675 12.3854V15.7188C4.16675 15.9489 4.3533 16.1354 4.58341 16.1354H7.91675C8.14687 16.1354 8.33341 15.9489 8.33341 15.7188V12.3854C8.33341 12.1553 8.14687 11.9688 7.91675 11.9688Z"
+                            stroke="#D9D9D9" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        <path d="M14.1667 5.30078V15.3008" stroke="#D9D9D9" stroke-width="2" stroke-linecap="round"
+                              stroke-linejoin="round"/>
+                    </svg>
+                    <label class="for-sorting" for="sorting">
+                        <span>{{translate('sort_by')}}</span>
+                    </label>
+                    <select class="product-list-filter-on-viewpage">
+                        <option value="latest" {{ request('sort_by') == 'latest' ? 'selected':'' }}>{{translate('latest')}}</option>
+                        <option
+                            value="low-high" {{ request('sort_by') == 'low-high' ? 'selected':'' }}>{{translate('low_to_High_Price')}} </option>
+                        <option
+                            value="high-low" {{ request('sort_by') == 'high-low' ? 'selected':'' }}>{{translate('High_to_Low_Price')}}</option>
+                        <option
+                            value="a-z" {{ request('sort_by') == 'a-z' ? 'selected':'' }}>{{translate('A_to_Z_Order')}}</option>
+                        <option
+                            value="z-a" {{ request('sort_by') == 'z-a' ? 'selected':'' }}>{{translate('Z_to_A_Order')}}</option>
+                    </select>
+                </div>
+            </form>
+            <div class="d-lg-none">
                 <div class="filter-show-btn btn btn--primary py-1 px-2 m-0">
                     <i class="tio-filter"></i>
                 </div>
-            </div>--}}
+            </div>
         </div>
 
     </div>
 
-    <div class="mb-md-4 rtl __inline-35 category-product-container" dir="{{Session::get('direction')}}">
+    <div class="container pb-5 mb-2 mb-md-4 rtl __inline-35" dir="{{Session::get('direction')}}">
         <div class="row">
             <aside
                 class="col-lg-3 hidden-xs col-md-3 col-sm-4 SearchParameters __search-sidebar {{Session::get('direction') === "rtl" ? 'pl-2' : 'pr-2'}}"
@@ -248,7 +227,7 @@
                                 </div>
                                 <ul id="lista1" class="__brands-cate-wrap" data-simplebar
                                     data-simplebar-auto-hide="false">
-                                    @foreach($activeBrands as $brand)
+                                    @foreach(\App\Utils\BrandManager::get_active_brands() as $brand)
                                         <div
                                             class="brand mt-2 for-brand-hover {{Session::get('direction') === "rtl" ? 'mr-2' : ''}}"
                                             id="brand">
@@ -273,11 +252,9 @@
                     <div class="mt-3 __cate-side-arrordion">
                         <div>
                             <div class="text-center __cate-side-title">
-                                <span class="widget-title font-semibold">
-                                    {{ translate('categories') }}
-                                </span>
+                                <span class="widget-title font-semibold">{{translate('categories')}}</span>
                             </div>
-
+                            @php($categories=\App\Utils\CategoryManager::parents())
                             <div class="accordion mt-n1 __cate-side-price" id="shop-categories">
                                 @foreach($categories as $category)
                                     <div class="menu--caret-accordion">
@@ -338,7 +315,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="sidebar-overlay"></div>
+
             </aside>
 
             <section class="col-lg-9">

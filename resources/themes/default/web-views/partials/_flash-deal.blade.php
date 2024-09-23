@@ -2,8 +2,8 @@
     <div class="container px-0 px-md-3">
         <div class="flash-deals-wrapper">
             <div class="flash-deal-view-all-web row d-flex justify-content-end mb-3">
-                @if ($web_config['flash_deals']->products_count > 0)
-                    <a class="text-capitalize view-all-text "
+                @if (count($web_config['flash_deals']->products)>0)
+                    <a class="text-capitalize view-all-text web-text-primary"
                     href="{{route('flash-deals',[$web_config['flash_deals']?$web_config['flash_deals']['id']:0])}}">
                         {{ translate('view_all')}}
                         <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>
@@ -21,8 +21,8 @@
             ?>
 
             <div class="row g-3 mx-max-md-0">
-                <div class="col-lg-4 px-max-md-0 flashdeal-responsive">
-                    <a href="{{route('flash-deals',[$web_config['flash_deals']?$web_config['flash_deals']['id']:0])}}" class="countdown-card bg-transparent">
+                <div class="col-lg-4 px-max-md-0">
+                    <div class="countdown-card bg-transparent">
                         <div class="flash-deal-text web-text-primary">
                             <div>
                                 <span>{{$web_config['flash_deals']->title}}</span>
@@ -58,29 +58,33 @@
                                 </div>
                             </div>
                         </div>
-                    </a>
+                    </div>
                 </div>
 
                 @php($nullFilter = 0)
-                @foreach($flashDeal['flashDealProducts'] as $key => $flashDealProduct)
-                    @php($nullFilter = $nullFilter+1)
+                @foreach($web_config['flash_deals']->products as $key=>$deal)
+                    @if ($deal->product)
+                        @php($nullFilter = $nullFilter+1)
+                    @endif
                 @endforeach
 
                 @if($nullFilter<=10)
                     <div class="col-lg-8 d-none d-md-block px-max-md-0">
                         <div class="owl-theme owl-carousel flash-deal-slider">
-                            @foreach($flashDeal['flashDealProducts'] as $key => $flashDealProduct)
-                                @include('web-views.partials._feature-product',['product'=> $flashDealProduct,'decimal_point_settings'=>$decimal_point_settings])
+                            @foreach($web_config['flash_deals']->products as $key=>$deal)
+                                @if($deal->product)
+                                    @include('web-views.partials._feature-product',['product'=>$deal->product,'decimal_point_settings'=>$decimal_point_settings])
+                                @endif
                             @endforeach
                         </div>
                     </div>
                 @else
                     @php($index = 0)
-                    @foreach($flashDeal['flashDealProducts'] as $key=>$flashDealProduct)
-                        @if ($index<10)
+                    @foreach($web_config['flash_deals']->products as $key=>$deal)
+                        @if ($index<10 && $deal->product)
                             @php($index = $index+1)
                             <div class="col-lg-2 col-6 col-sm-4 col-md-3 d-none d-md-block px-max-md-0">
-                                @include('web-views.partials._feature-product',['product'=> $flashDealProduct,'decimal_point_settings'=>$decimal_point_settings])
+                                @include('web-views.partials._feature-product',['product'=>$deal->product,'decimal_point_settings'=>$decimal_point_settings])
                             </div>
                         @endif
                     @endforeach
@@ -88,16 +92,16 @@
 
                 <div class="col-12 pb-0 d-md-none px-max-md-0">
                     <div class="owl-theme owl-carousel flash-deal-slider-mobile">
-                        @foreach($flashDeal['flashDealProducts'] as $key=>$flashDealProduct)
-                            @if( $key<10)
-                                @include('web-views.partials._product-card-1',['product' => $flashDealProduct,'decimal_point_settings'=>$decimal_point_settings])
+                        @foreach($web_config['flash_deals']->products as $key=>$deal)
+                            @if( $key<10 && $deal->product)
+                                @include('web-views.partials._product-card-1',['product'=>$deal->product,'decimal_point_settings'=>$decimal_point_settings])
                             @endif
                         @endforeach
                     </div>
                 </div>
-                @if (count($flashDeal['flashDealProducts']) > 0)
+                @if (count($web_config['flash_deals']->products)>0)
                     <div class="col-12 d-md-none text-center px-max-md-0">
-                        <a class="text-capitalize view-all-text "
+                        <a class="text-capitalize view-all-text web-text-primary"
                             href="{{route('flash-deals',[$web_config['flash_deals']?$web_config['flash_deals']['id']:0])}}">
                             {{ translate('view_all')}}
                             <i class="czi-arrow-{{Session::get('direction') === "rtl" ? 'left mr-1 ml-n1 mt-1 float-left' : 'right ml-1 mr-n1'}}"></i>

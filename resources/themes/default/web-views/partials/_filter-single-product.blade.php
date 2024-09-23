@@ -1,17 +1,39 @@
 @php($overallRating = getOverallRating($product->reviews))
 
 <div class="product-single-hover style--card">
-    <div class="overflow-hidden position-relative d-flex flex-wrap">
-        <!-- Image Section (Left) -->
-        <div class="align-middle product-image-section d-flex justify-content-center align-items-center">
-            <a href="{{route('product',$product->slug)}}" class="w-100 text-center">
-                <img alt="" src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" class="img-fluid">
-            </a>
-        </div>
+    <div class="overflow-hidden position-relative">
+        <div class=" inline_product clickable d-flex justify-content-center">
+            @if($product->discount > 0)
+                <span class="for-discount-value p-1 pl-2 pr-2 font-bold fs-13">
+                    <span class="direction-ltr d-block">
+                        @if ($product->discount_type == 'percent')
+                            -{{ round($product->discount, (!empty($decimal_point_settings) ? $decimal_point_settings: 0)) }}%
+                        @elseif($product->discount_type =='flat')
+                            -{{ webCurrencyConverter(amount: $product->discount) }}
+                        @endif
+                    </span>
+                </span>
+            @else
+                <div class="d-flex justify-content-end">
+                    <span class="for-discount-value-null"></span>
+                </div>
+            @endif
+            <div class="p-10px pb-0">
+                <a href="{{route('product',$product->slug)}}" class="w-100">
+                    <img alt="" src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}">
+                </a>
+            </div>
 
-        <!-- Product Details Section (Right) -->
-        <div class="single-product-details flex-grow-1 ml-4">
-            <!-- Rating Section -->
+            <div class="quick-view">
+                <a class="btn-circle stopPropagation action-product-quick-view" href="javascript:" data-product-id="{{ $product->id }}">
+                    <i class="czi-eye align-middle"></i>
+                </a>
+            </div>
+            @if($product->product_type == 'physical' && $product->current_stock <= 0)
+                <span class="out_fo_stock">{{translate('out_of_stock')}}</span>
+            @endif
+        </div>
+        <div class="single-product-details">
             @if($overallRating[0] != 0 )
             <div class="rating-show justify-content-between text-center">
                 <span class="d-inline-block font-size-sm text-body">
@@ -28,33 +50,25 @@
                 </span>
             </div>
             @endif
-
-            <!-- Product Name -->
-            <div class="text">
-                <a href="{{route('product',$product->slug)}}" style="-webkit-line-clamp: 3; font-size:14px;">
-                    {{ Str::limit($product['name'], 55) }}
+            <div class="text-center">
+                <a href="{{route('product',$product->slug)}}">
+                    {{ Str::limit($product['name'], 23) }}
                 </a>
             </div>
-    
-            <!-- Price Section -->
-            <div class="justify-content-between text-left mt-3 mb-1 product-price-section">
-                <div class="product-price text-left justify-content-left align-items-left gap-8">
+            <div class="justify-content-between text-center">
+                <div class="product-price text-center d-flex flex-wrap justify-content-center align-items-center gap-8">
                     @if($product->discount > 0)
                         <del class="category-single-product-price">
                             {{ webCurrencyConverter(amount: $product->unit_price) }}
                         </del>
+                        <br>
                     @endif
-                    <span class="text-dark category-single-product-price-main">
+                    <span class="text-accent text-dark">
                         {{ webCurrencyConverter(amount:
                             $product->unit_price-(getProductDiscount(product: $product, price: $product->unit_price))
                         ) }}
                     </span>
                 </div>
-            </div>
-
-            <!-- Add to Cart Button -->
-            <div class="shopnowbtn text-center">
-                <a href="{{route('product',$product->slug)}}" class="btnshop text-center" style="padding: 8px 18px">Buy On EMI</a>
             </div>
         </div>
     </div>

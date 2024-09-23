@@ -1,4 +1,19 @@
 "use strict";
+
+// Bar Charts
+Chart.plugins.unregister(ChartDataLabels);
+
+$('.js-chart').each(function () {
+    $.HSCore.components.HSChartJS.init($(this));
+});
+
+var updatingChart = $.HSCore.components.HSChartJS.init($('#updatingData'));
+
+
+$(function () {
+    $('[data-toggle="tooltip"]').tooltip()
+})
+
 $('#from_date,#to_date').change(function () {
     let from_date = $('#from_date').val();
     let to_date = $('#to_date').val();
@@ -78,4 +93,5 @@ var options = {
 
 var chart = new ApexCharts(document.querySelector("#dognut-pie"), options);
 chart.render();
+
 

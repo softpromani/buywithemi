@@ -57,4 +57,8 @@ class BrandManager
 
         return $query->latest()->get();
     }
+
+    public static function get_active_brands(){
+        return Brand::active()->withCount('brandProducts')->latest()->get();
+    }
 }

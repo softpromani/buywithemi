@@ -9,7 +9,7 @@
                     <div class="wishlist-img position-relative">
                         <a href="{{route('product',$product->slug)}}" class="d-block h-100">
                             <img class="__img-full"
-                                 src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}"
+                                 src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}"
                                  alt="{{ translate('wishlist') }}">
                         </a>
 
@@ -38,7 +38,8 @@
                                 <span class="font-weight-bold amount text-dark price-range d-flex align-items-center gap-2">{!! getPriceRangeWithDiscount(product: $product) !!}</span>
                             </div>
                         </div>
-                        <a href="javascript:" class="remove--icon function-remove-wishList" data-id="{{ $product['id'] }}">
+                        <a href="javascript:" class="remove--icon function-remove-wishList" data-id="{{ $product['id'] }}"
+                           data-modal="remove-wishlist-modal">
                             <i class="fa fa-heart web-text-primary"></i>
                         </a>
 
@@ -50,12 +51,10 @@
         @endforeach
     </div>
 @else
-    <div class="d-flex justify-content-center align-items-center h-100">
-        <div class="login-card w-100 border-0 shadow-none">
-            <div class="text-center py-3 text-capitalize">
-                <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/wishlist.png') }}" alt="" class="mb-4" width="70">
-                <h5 class="fs-14">{{ translate('no_product_found_in_wishlist') }}!</h5>
-            </div>
+    <div class="login-card">
+        <div class="text-center py-3 text-capitalize">
+            <img src="{{ theme_asset(path: 'public/assets/front-end/img/icons/wishlist.png') }}" alt="" class="mb-4" width="70">
+            <h5 class="fs-14">{{ translate('no_product_found_in_wishlist') }}!</h5>
         </div>
     </div>
 @endif

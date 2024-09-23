@@ -22,7 +22,7 @@
             <div class="d-block pb-0">
                 <a href="{{route('product',$product->slug)}}" class="d-block">
                     <img alt=""
-                         src="{{ getStorageImages(path: $product->thumbnail_full_url, type: 'product') }}" loading='lazy'>
+                         src="{{ getValidImage(path: 'storage/app/public/product/thumbnail/'.$product['thumbnail'], type: 'product') }}">
                 </a>
             </div>
 
